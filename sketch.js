@@ -24,8 +24,8 @@ function draw() {
     graphics.background(0); // 設定背景為黑色
 
     // 在 graphics 上繪製圓
-    for (let i = 0; i < graphics.width; i += 20) {
-      for (let j = 0; j < graphics.height; j += 20) {
+    for (let i = 0; i < capture.width; i += 20) {
+      for (let j = 0; j < capture.height; j += 20) {
         let col = capture.get(i, j); // 擷取 capture 對應位置的顏色
         graphics.fill(col); // 設定圓的顏色
         graphics.noStroke();
