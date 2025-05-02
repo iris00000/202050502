@@ -20,21 +20,19 @@ function draw() {
 
   // 更新 graphics 的內容
   graphics.background(0); // 設定背景為黑色
-  capture.loadPixels(); // 加載攝影機影像的像素
-  graphics.noStroke(); // 移除邊框
-  for (let i = 0; i < capture.width; i += 20) {
-    for (let j = 0; j < capture.height; j += 20) {
-      let index = (j * capture.width + i) * 4; // 計算像素索引
-      let r = capture.pixels[index]; // 紅色通道
-      let g = capture.pixels[index + 1]; // 綠色通道
-      let b = capture.pixels[index + 2]; // 藍色通道
-      graphics.fill(r, g, b); // 設定圓的顏色
+
+  // 在 graphics 上繪製圓
+  for (let i = 0; i < graphics.width; i += 20) {
+    for (let j = 0; j < graphics.height; j += 20) {
+      let col = capture.get(i, j); // 擷取 capture 對應位置的顏色
+      graphics.fill(col); // 設定圓的顏色
+      graphics.noStroke();
       graphics.ellipse(i + 10, j + 10, 15, 15); // 繪製圓，中心點偏移 10 以對齊單位格
     }
   }
 
-  // 繪製圖形內容在視訊畫面的上方
-  image(graphics, x, y - graphics.height);
+  // 繪製 graphics 在螢幕正中間
+  image(graphics, (width - graphics.width) / 2, (height - graphics.height) / 2);
 
   // 繪製視訊畫面
   push(); // 儲存當前畫布狀態
@@ -47,3 +45,4 @@ function draw() {
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight); // 當視窗大小改變時調整畫布大小
 }
+
