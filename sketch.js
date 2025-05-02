@@ -18,27 +18,30 @@ function draw() {
   let x = (width - capture.width) / 2; // 計算影像的水平居中位置
   let y = (height - capture.height) / 2; // 計算影像的垂直居中位置
 
-  // 更新 graphics 的內容
-  graphics.background(0); // 設定背景為黑色
+  // 確保 capture 已準備好
+  if (capture.width > 0 && capture.height > 0) {
+    // 更新 graphics 的內容
+    graphics.background(0); // 設定背景為黑色
 
-  // 在 graphics 上繪製圓
-  for (let i = 0; i < graphics.width; i += 20) {
-    for (let j = 0; j < graphics.height; j += 20) {
-      let col = capture.get(i, j); // 擷取 capture 對應位置的顏色
-      graphics.fill(col); // 設定圓的顏色
-      graphics.noStroke();
-      graphics.ellipse(i + 10, j + 10, 15, 15); // 繪製圓，中心點偏移 10 以對齊單位格
+    // 在 graphics 上繪製圓
+    for (let i = 0; i < graphics.width; i += 20) {
+      for (let j = 0; j < graphics.height; j += 20) {
+        let col = capture.get(i, j); // 擷取 capture 對應位置的顏色
+        graphics.fill(col); // 設定圓的顏色
+        graphics.noStroke();
+        graphics.ellipse(i + 10, j + 10, 15, 15); // 繪製圓，中心點偏移 10 以對齊單位格
+      }
     }
-  }
 
-  // 繪製 graphics 在螢幕正中間
-  image(graphics, (width - graphics.width) / 2, (height - graphics.height) / 2);
+    // 繪製 graphics 在螢幕正中間
+    image(graphics, (width - graphics.width) / 2, (height - graphics.height) / 2);
+  }
 
   // 繪製視訊畫面
   push(); // 儲存當前畫布狀態
   translate(width, 0); // 將畫布的原點移到右上角
   scale(-1, 1); // 水平翻轉畫布
-  //image(capture, x, y); // 在畫布中央繪製翻轉後的影像
+  image(capture, x, y); // 在畫布中央繪製翻轉後的影像
   pop(); // 恢復畫布狀態
 }
 
