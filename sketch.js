@@ -10,7 +10,7 @@ function setup() {
 
   // 建立與視訊畫面相同大小的圖形內容
   graphics = createGraphics(capture.width, capture.height);
-  graphics.background(0); // 設定圖形內容的背景顏色為黑色
+  graphics.background(0); // 設定圖形內容背景為黑色
 }
 
 function draw() {
@@ -18,34 +18,42 @@ function draw() {
   let x = (width - capture.width) / 2; // 計算影像的水平居中位置
   let y = (height - capture.height) / 2; // 計算影像的垂直居中位置
 
-  // 確保 capture 已準備好
-  if (capture.width > 0 && capture.height > 0) {
-    // 更新 graphics 的內容
-    graphics.background(0); // 設定背景為黑色
+  // 更新 graphics 的內容
+  graphics.background(0); // 重設背景為黑色
+  capture.loadPixels(); // 載入攝影機影像的像素
+  graphics.noStroke(); // 不使用邊框
 
-    // 在 graphics 上繪製圓
-    for (let i = 0; i < capture.width; i += 20) {
-      for (let j = 0; j < capture.height; j += 20) {
-        let col = capture.get(i, j); // 擷取 capture 對應位置的顏色
-        graphics.fill(col); // 設定圓的顏色
-        graphics.noStroke();
-        graphics.ellipse(i + 10, j + 10, 15, 15); // 繪製圓，中心點偏移 10 以對齊單位格
-      }
+  // 水平翻轉 graphics 的內容
+  graphics.push();
+  graphics.translate(capture.width, 0); // 將原點移到右側
+  graphics.scale(-1, 1); // 水平翻轉
+
+  for (let i = 0; i < capture.width; i += 20) {
+    for (let j = 0; j < capture.height; j += 20) {
+      let index = (j * capture.width + i) * 4; // 計算像素索引
+      let r = capture.pixels[index]; // 紅色通道
+      let g = capture.pixels[index + 1]; // 綠色通道
+      let b = capture.pixels[index + 2]; // 藍色通道
+
+      // 繪製方框
+      graphics.fill(r, g, b); // 設定方框顏色
+      graphics.rect(i, j, 18, 18); // 繪製方框
+
+      // 繪製黑色圓
+      graphics.fill(0); // 設定圓形顏色為黑色
+      graphics.ellipse(i + 9, j + 9, 5, 5); // 繪製圓形，置於方框中央
     }
-
-    // 繪製 graphics 在螢幕正中間
-    image(graphics, (width - graphics.width) / 2, (height - graphics.height) / 2);
   }
 
+  graphics.pop();
+
+  // 繪製圖形內容在視訊畫面上方，並確保居中
+  image(graphics, x, y);
+
   // 繪製視訊畫面
-  push(); // 儲存當前畫布狀態
-  translate(width, 0); // 將畫布的原點移到右上角
-  scale(-1, 1); // 水平翻轉畫布
-  image(capture, x, y); // 在畫布中央繪製翻轉後的影像
-  pop(); // 恢復畫布狀態
+  image(capture, x, y);
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight); // 當視窗大小改變時調整畫布大小
 }
-
